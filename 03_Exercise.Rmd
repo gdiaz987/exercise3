@@ -82,20 +82,22 @@ These exercises will reiterate what you learned in the "Expanding the data wrang
 
 ```{r}
 garden_harvest %>% 
-  summarise(weight*453.592) %>% 
-  wday(
-    date,
-    label=FALSE,
-    abbr=TRUE,
-    week_start=getOption("lubridate.week.start",7),
-    locale=Sys.getlocale("LC_TIME")
-  )
+  mutate(day_of_week=wday(date, label=TRUE)) %>% 
+  mutate(wt_lbs=weight*.00220462) %>%
+  group_by(vegetable, day_of_week) %>% 
+  summarize(total_lbs=sum(wt_lbs)) %>% 
+  pivot_wider(names_from= day_of_week, values_from= total_lbs) 
+  
 ```
 
   2. Summarize the `garden_harvest` data to find the total harvest in pound for each vegetable variety and then try adding the plot from the `garden_planting` table. This will not turn out perfectly. What is the problem? How might you fix it?
 
 ```{r}
-
+garden_harvest %>% 
+  group_by(vegetable, variety) %>% 
+  summarize(total_weight=sum(weight)) %>% 
+mutate(weight_in_pounds=total_weight*.00220462) %>% 
+  left_join(garden_planting, by=c("vegetable", "variety"))
 ```
 
   3. I would like to understand how much money I "saved" by gardening, for each vegetable type. Describe how I could use the `garden_harvest` and `garden_spending` datasets, along with data from somewhere like [this](https://products.wholefoodsmarket.com/search?sort=relevance&store=10542) to answer this question. You can answer this in words, referencing various join functions. You don't need R code but could provide some if it's helpful.
