@@ -196,7 +196,11 @@ Trips %>%
   10. Facet your graph from exercise 8. by day of the week. Is there a pattern?
   
 ```{r}
-
+Trips %>% 
+  mutate(time=hour(sdate)+(minute(sdate)/60),dayofweek=wday(sdate, label=TRUE)) %>% 
+  ggplot(aes(x=time))+
+  geom_density(fill="lavender")+
+  facet_wrap(vars(dayofweek))
 ```
   
 The variable `client` describes whether the renter is a regular user (level `Registered`) or has not joined the bike-rental organization (`Causal`). The next set of exercises investigate whether these two different categories of users show different rental behavior and how `client` interacts with the patterns you found in the previous exercises. 
