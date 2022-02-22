@@ -334,10 +334,25 @@ It's natural to expect that bikes are rented more at some times of day, some day
   7. A density plot, which is a smoothed out histogram, of the events versus `sdate`. Use `geom_density()`.
   
 
+```r
+Trips %>% 
+  ggplot(aes(x=sdate))+
+  geom_density()
+```
+
+![](03_Exercise_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
   
   8. A density plot of the events versus time of day.  You can use `mutate()` with `lubridate`'s  `hour()` and `minute()` functions to extract the hour of the day and minute within the hour from `sdate`. Hint: A minute is 1/60 of an hour, so create a variable where 3:30 is 3.5 and 3:45 is 3.75.
   
 
+```r
+Trips %>% 
+  mutate(time=hour(sdate)+(minute(sdate)/60)) %>% 
+  ggplot(aes(x=time))+
+  geom_density()
+```
+
+![](03_Exercise_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
   
   9. A bar graph of the events versus day of the week. Put day on the y-axis.
   
