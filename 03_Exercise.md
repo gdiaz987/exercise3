@@ -384,6 +384,15 @@ The variable `client` describes whether the renter is a regular user (level `Reg
   11. Change the graph from exercise 10 to set the `fill` aesthetic for `geom_density()` to the `client` variable. You should also set `alpha = .5` for transparency and `color=NA` to suppress the outline of the density function.
   
 
+```r
+Trips %>% 
+  mutate(time=hour(sdate)+(minute(sdate)/60),dayofweek=wday(sdate, label=TRUE)) %>% 
+  ggplot(aes(x=time))+
+  geom_density(aes(fill=client),alpha=.5, color=NA)+
+  facet_wrap(vars(dayofweek))
+```
+
+![](03_Exercise_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
   12. Change the previous graph by adding the argument `position = position_stack()` to `geom_density()`. In your opinion, is this better or worse in terms of telling a story? What are the advantages/disadvantages of each?
   
