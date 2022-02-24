@@ -397,14 +397,45 @@ Trips %>%
   12. Change the previous graph by adding the argument `position = position_stack()` to `geom_density()`. In your opinion, is this better or worse in terms of telling a story? What are the advantages/disadvantages of each?
   
 
+```r
+Trips %>% 
+  mutate(time=hour(sdate)+(minute(sdate)/60),dayofweek=wday(sdate, label=TRUE)) %>% 
+  ggplot(aes(x=time))+
+  geom_density(aes(fill=client),alpha=.5, color=NA, position=position_stack())+
+  facet_wrap(vars(dayofweek))
+```
+
+![](03_Exercise_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
   
   13. In this graph, go back to using the regular density plot (without `position = position_stack()`). Add a new variable to the dataset called `weekend` which will be "weekend" if the day is Saturday or Sunday and  "weekday" otherwise (HINT: use the `ifelse()` function and the `wday()` function from `lubridate`). Then, update the graph from the previous problem by faceting on the new `weekend` variable. 
   
 
+```r
+Trips %>% 
+  mutate(time=hour(sdate)+(minute(sdate)/60),
+         dayofweek=wday(sdate, label=TRUE),
+         weekend=ifelse(dayofweek %in% c("Sat","Sun"),"weekend","weekday")) %>% 
+  ggplot(aes(x=time))+
+  geom_density(aes(fill=client),alpha=.5, color=NA)+
+  facet_wrap(vars(weekend))
+```
+
+![](03_Exercise_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
   
-  14. Change the graph from the previous problem to facet on `client` and fill with `weekday`. What information does this graph tell you that the previous didn't? Is one graph better than the other?
+  14. Change the graph from the previous problem to facet on `client` and fill with `weekend`. What information does this graph tell you that the previous didn't? Is one graph better than the other?
   
 
+```r
+Trips %>% 
+  mutate(time=hour(sdate)+(minute(sdate)/60),
+         dayofweek=wday(sdate, label=TRUE),
+         weekend=ifelse(dayofweek %in% c("Sat","Sun"),"weekend","weekday")) %>% 
+  ggplot(aes(x=time))+
+  geom_density(aes(fill=weekend),alpha=.5, color=NA)+
+  facet_wrap(vars(client))
+```
+
+![](03_Exercise_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
   
 ### Spatial patterns
 
