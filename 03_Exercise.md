@@ -231,6 +231,7 @@ mutate(weight_in_pounds=total_weight*.00220462) %>%
 </div>
 
   3. I would like to understand how much money I "saved" by gardening, for each vegetable type. Describe how I could use the `garden_harvest` and `garden_spending` datasets, along with data from somewhere like [this](https://products.wholefoodsmarket.com/search?sort=relevance&store=10542) to answer this question. You can answer this in words, referencing various join functions. You don't need R code but could provide some if it's helpful.
+  
 
   4. Subset the data to tomatoes. Reorder the tomato varieties from smallest to largest first harvest date. Create a barplot of total harvest in pounds for each variety, in the new order.CHALLENGE: add the date near the end of the bar. (This is probably not a super useful graph because it's difficult to read. This is more an exercise in using some of the functions you just learned.)
 
@@ -442,6 +443,21 @@ Trips %>%
   15. Use the latitude and longitude variables in `Stations` to make a visualization of the total number of departures from each station in the `Trips` data. Use either color or size to show the variation in number of departures. We will improve this plot next week when we learn about maps!
   
 
+```r
+Trips %>% 
+  group_by(sstation) %>% 
+  summarise(sum_station=n()) %>% 
+  left_join(Stations,
+         by=c("sstation"="name")) %>% 
+  ggplot(aes(x=long, y=lat))+
+  geom_point()
+```
+
+```
+## Warning: Removed 11 rows containing missing values (geom_point).
+```
+
+![](03_Exercise_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
   
   16. Only 14.4% of the trips in our data are carried out by casual users. Create a plot that shows which area(s) have stations with a much higher percentage of departures by casual users. What patterns do you notice? (Again, we'll improve this next week when we learn about maps).
   
