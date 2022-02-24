@@ -462,6 +462,25 @@ Trips %>%
   16. Only 14.4% of the trips in our data are carried out by casual users. Create a plot that shows which area(s) have stations with a much higher percentage of departures by casual users. What patterns do you notice? (Again, we'll improve this next week when we learn about maps).
   
 
+```r
+Trips %>% 
+  group_by(sstation, client) %>% 
+  summarise(sum_station=n()) %>% 
+  left_join(Stations,
+         by=c("sstation"="name")) %>% 
+  ggplot(aes(x=long, y=lat))+
+  geom_point(aes(color=client))
+```
+
+```
+## `summarise()` has grouped output by 'sstation'. You can override using the `.groups` argument.
+```
+
+```
+## Warning: Removed 18 rows containing missing values (geom_point).
+```
+
+![](03_Exercise_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
   
 **DID YOU REMEMBER TO GO BACK AND CHANGE THIS SET OF EXERCISES TO THE LARGER DATASET? IF NOT, DO THAT NOW.**
 
