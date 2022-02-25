@@ -537,6 +537,33 @@ breed_rank_all %>%
   19. Create your own! Requirements: use a `join` or `pivot` function (or both, if you'd like), a `str_XXX()` function, and a `fct_XXX()` function to create a graph using any of the dog datasets. One suggestion is to try to improve the graph you created for the Tidy Tuesday assignment. If you want an extra challenge, find a way to use the dog images in the `breed_rank_all` file - check out the `ggimage` library and [this resource](https://wilkelab.org/ggtext/) for putting images as labels.
   
 
+```r
+breed_rank_all %>% 
+  pivot_longer(cols=starts_with("20"), names_to = "year", values_to="totalranking") %>% 
+  separate(year, into=c("year", "rank"), convert=TRUE) %>% 
+  mutate(breed_str=str_squish(Breed)) %>% 
+  inner_join(breed_traits_total %>% 
+               mutate(breed_str=str_squish(Breed)) %>% 
+               slice_max(n=20, order_by=totalrating),
+             by= "breed_str") %>% 
+  ggplot(aes(x=year, y=totalranking, color=breed_str))+
+  geom_point()+
+  geom_smooth(method="lm", se=FALSE)
+```
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+```
+## Warning: Removed 7 rows containing non-finite values (stat_smooth).
+```
+
+```
+## Warning: Removed 7 rows containing missing values (geom_point).
+```
+
+![](03_Exercise_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
   
 ## GitHub link
 
