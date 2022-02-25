@@ -304,7 +304,7 @@ Here is the code to read in the data. We do this a little differently than usual
 
 ```r
 data_site <- 
-  "https://www.macalester.edu/~dshuman1/data/112/2014-Q4-Trips-History-Data-Small.rds" 
+  "https://www.macalester.edu/~dshuman1/data/112/2014-Q4-Trips-History-Data.rds" 
 Trips <- readRDS(gzcon(url(data_site)))
 Stations<-read_csv("http://www.macalester.edu/~dshuman1/data/112/DC-Stations.csv")
 ```
@@ -454,7 +454,7 @@ Trips %>%
 ```
 
 ```
-## Warning: Removed 11 rows containing missing values (geom_point).
+## Warning: Removed 12 rows containing missing values (geom_point).
 ```
 
 ![](03_Exercise_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
@@ -477,7 +477,7 @@ Trips %>%
 ```
 
 ```
-## Warning: Removed 18 rows containing missing values (geom_point).
+## Warning: Removed 24 rows containing missing values (geom_point).
 ```
 
 ![](03_Exercise_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
@@ -491,10 +491,48 @@ In this section, we'll use the data from 2022-02-01 Tidy Tuesday. If you didn't 
   17. The final product of this exercise will be a graph that has breed on the y-axis and the sum of the numeric ratings in the `breed_traits` dataset on the x-axis, with a dot for each rating. First, create a new dataset called `breed_traits_total` that has two variables -- `Breed` and `total_rating`. The `total_rating` variable is the sum of the numeric ratings in the `breed_traits` dataset (we'll use this dataset again in the next problem). Then, create the graph just described. Omit Breeds with a `total_rating` of 0 and order the Breeds from highest to lowest ranked. You may want to adjust the `fig.height` and `fig.width` arguments inside the code chunk options (eg. `{r, fig.height=8, fig.width=4}`) so you can see things more clearly - check this after you knit the file to assure it looks like what you expected.
 
 
+```r
+breed_traits_total<-breed_traits %>% 
+  select(-`Coat Type`,-`Coat Length`) %>% 
+  pivot_longer(!Breed, 
+               names_to = "traits",
+               values_to = "rating") %>% 
+  group_by(Breed) %>% 
+  summarise(totalrating=sum(rating))
+```
+
+```r
+breed_traits_total %>% 
+  filter(totalrating!=0) %>% 
+  ggplot(aes(x=totalrating, y=fct_reorder(Breed, totalrating)))+
+  geom_point()+
+  labs(title="Total Rating of Traits by Dog Breed", y="Breed", x="Rating")
+```
+
+![](03_Exercise_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
+
 
   18. The final product of this exercise will be a graph with the top-20 dogs in total ratings (from previous problem) on the y-axis, year on the x-axis, and points colored by each breed's ranking for that year (from the `breed_rank_all` dataset). The points within each breed will be connected by a line, and the breeds should be arranged from the highest median rank to lowest median rank ("highest" is actually the smallest numer, eg. 1 = best). After you're finished, think of AT LEAST one thing you could you do to make this graph better. HINTS: 1. Start with the `breed_rank_all` dataset and pivot it so year is a variable. 2. Use the `separate()` function to get year alone, and there's an extra argument in that function that can make it numeric. 3. For both datasets used, you'll need to `str_squish()` Breed before joining. 
   
 
+```r
+breed_rank_all %>% 
+  pivot_longer(cols=starts_with("20"), names_to = "year", values_to = "total_ranking") %>% 
+  separate(year, into=c("year", "rank"), convert=TRUE) %>% 
+  mutate(breed_str=str_squish(Breed)) %>% 
+  inner_join(breed_traits_total %>% 
+             mutate(breed_str=str_squish(Breed)) %>% 
+               slice_max(n=20, order_by=totalrating),
+             by= "breed_str") %>% 
+  ggplot(aes(x=year, y=fct_rev(fct_reorder(breed_str, total_ranking,median)),
+             color=total_ranking))+
+  geom_point()+
+  geom_line()+
+  labs(y= "Breed")+
+  scale_color_viridis_c()
+```
+
+![](03_Exercise_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
   
   19. Create your own! Requirements: use a `join` or `pivot` function (or both, if you'd like), a `str_XXX()` function, and a `fct_XXX()` function to create a graph using any of the dog datasets. One suggestion is to try to improve the graph you created for the Tidy Tuesday assignment. If you want an extra challenge, find a way to use the dog images in the `breed_rank_all` file - check out the `ggimage` library and [this resource](https://wilkelab.org/ggtext/) for putting images as labels.
   
