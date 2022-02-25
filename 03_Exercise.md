@@ -229,7 +229,8 @@ garden_harvest %>%
   group_by(variety) %>% 
   summarise(totalweight=sum(weight*.00220462),firstdate=min(date)) %>% 
   ggplot(aes(x=totalweight, y=fct_reorder(variety,firstdate,median)))+
-  geom_col()
+  geom_col()+
+  labs(title="Total harvest of tomato varieties", x="weight(pounds)", y="type")
 ```
 
 ![](03_Exercise_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
@@ -324,7 +325,8 @@ It's natural to expect that bikes are rented more at some times of day, some day
 ```r
 Trips %>% 
   ggplot(aes(x=sdate))+
-  geom_density()
+  geom_density()+
+  labs(title="Events vs when rental started", x="sdate", y="")
 ```
 
 ![](03_Exercise_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
@@ -336,7 +338,8 @@ Trips %>%
 Trips %>% 
   mutate(time=hour(sdate)+(minute(sdate)/60)) %>% 
   ggplot(aes(x=time))+
-  geom_density(fill="lavender")
+  geom_density(fill="lavender")+
+  labs(title="Events vs time of day", x="time", y="")
 ```
 
 ![](03_Exercise_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
@@ -348,7 +351,8 @@ Trips %>%
 Trips %>% 
   mutate(dayofweek=wday(sdate, label=TRUE)) %>% 
   ggplot(aes(y=dayofweek))+
-  geom_bar()
+  geom_bar()+
+  labs(title="Events vs day of the week", x="", y="day")
 ```
 
 ![](03_Exercise_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
@@ -361,7 +365,8 @@ Trips %>%
   mutate(time=hour(sdate)+(minute(sdate)/60),dayofweek=wday(sdate, label=TRUE)) %>% 
   ggplot(aes(x=time))+
   geom_density(fill="lavender")+
-  facet_wrap(vars(dayofweek))
+  facet_wrap(vars(dayofweek))+
+  labs(title="Events vs day of the week", x="", y="day")
 ```
 
 ![](03_Exercise_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
@@ -376,7 +381,8 @@ Trips %>%
   mutate(time=hour(sdate)+(minute(sdate)/60),dayofweek=wday(sdate, label=TRUE)) %>% 
   ggplot(aes(x=time))+
   geom_density(aes(fill=client),alpha=.5, color=NA)+
-  facet_wrap(vars(dayofweek))
+  facet_wrap(vars(dayofweek))+
+   labs(title="Events vs day of the week", x="", y="day")
 ```
 
 ![](03_Exercise_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
@@ -389,7 +395,8 @@ Trips %>%
   mutate(time=hour(sdate)+(minute(sdate)/60),dayofweek=wday(sdate, label=TRUE)) %>% 
   ggplot(aes(x=time))+
   geom_density(aes(fill=client),alpha=.5, color=NA, position=position_stack())+
-  facet_wrap(vars(dayofweek))
+  facet_wrap(vars(dayofweek))+
+   labs(title="Events vs day of the week", x="", y="day")
 ```
 
 ![](03_Exercise_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
@@ -436,7 +443,8 @@ Trips %>%
   left_join(Stations,
          by=c("sstation"="name")) %>% 
   ggplot(aes(x=long, y=lat))+
-  geom_point()
+  geom_point()+
+   labs(title="Total number of departures from each station", x="longitude", y="latitude")
 ```
 
 ```
@@ -455,7 +463,8 @@ Trips %>%
   left_join(Stations,
          by=c("sstation"="name")) %>% 
   ggplot(aes(x=long, y=lat))+
-  geom_point(aes(color=client))
+  geom_point(aes(color=client))+
+   labs(title="Which areas have stations with a higher percentage of departures by casual users", x="longitude", y="latitude")
 ```
 
 ```
@@ -515,7 +524,8 @@ breed_rank_all %>%
   geom_point()+
   geom_line()+
   labs(y= "Breed")+
-  scale_color_viridis_c()
+  scale_color_viridis_c()+
+   labs(title="Top 20 dogs in total ratings", x="year", y="breeds")
 ```
 
 ![](03_Exercise_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
@@ -534,7 +544,8 @@ breed_rank_all %>%
              by= "breed_str") %>% 
   ggplot(aes(x=year, y=totalranking, color=breed_str))+
   geom_point()+
-  geom_smooth(method="lm", se=FALSE)
+  geom_smooth(method="lm", se=FALSE)+
+   labs(title="Breed popularity based off of ranking and year", x="year", y="total ranking")
 ```
 
 ```
